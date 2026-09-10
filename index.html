@@ -4,7 +4,382 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa de Animes e Mangás</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        #searchBtn {
+            padding: 15px 40px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #searchBtn:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        #searchBtn:active {
+            transform: translateY(0);
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: rgba(255,255,255,0.4);
+            transform: scale(1.05);
+        }
+
+        .filter-btn.active {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .welcome-text {
+            text-align: center;
+            color: #999;
+            font-size: 1.1em;
+            padding: 40px 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        .result-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            border-bottom: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-type {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .card-info {
+            font-size: 0.9em;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .details-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .details-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .details-image {
+            width: 250px;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5em;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .details-info h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .details-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .meta-label {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            color: #333;
+            font-size: 1.1em;
+            margin-top: 5px;
+        }
+
+        .details-description {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .details-description h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .rating-section {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            font-size: 1.5em;
+        }
+
+        .rating-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .genres-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .genre-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .close-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .details-header {
+                flex-direction: column;
+            }
+
+            .details-image {
+                width: 100%;
+                height: 250px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -29,7 +404,7 @@
             <div class="filter-section">
                 <button class="filter-btn" onclick="filterByType('anime')">Animes</button>
                 <button class="filter-btn" onclick="filterByType('manga')">Mangás</button>
-                <button class="filter-btn" onclick="filterByType('all')">Todos</button>
+                <button class="filter-btn active" onclick="filterByType('all')">Todos</button>
             </div>
 
             <div id="resultsContainer" class="results-container">
@@ -44,7 +419,488 @@
         </footer>
     </div>
 
-    <script src="database.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Banco de dados completo de animes e mangás
+        const animeDatabase = [
+            {
+                id: 1,
+                name: "Naruto",
+                type: "anime",
+                year: 2002,
+                episodes: 220,
+                status: "Completo",
+                rating: 8.3,
+                genres: ["Ação", "Aventura", "Supernatural"],
+                synopsis: "Naruto Uzumaki é um jovem ninja que busca se tornar Hokage, o líder de sua aldeia. Com uma criatura de cauda de raposa selada em seu corpo, ele enfrenta desafios e faz amigos ao longo de sua jornada.",
+                studio: "Pierrot",
+                director: "Hayato Date",
+                cast: ["Junichi Suwabe", "Chie Nakamura"],
+                emoji: "🥷",
+                relatedManga: "Naruto Manga",
+                popularity: "Muito Alto"
+            },
+            {
+                id: 2,
+                name: "One Piece",
+                type: "anime",
+                year: 1999,
+                episodes: 1000,
+                status: "Em Andamento",
+                rating: 8.8,
+                genres: ["Ação", "Aventura", "Comédia"],
+                synopsis: "Monkey D. Luffy é um pirata determinado que segue em busca do tesouro mais procurado - One Piece - para se tornar o Rei dos Piratas.",
+                studio: "Toei Animation",
+                director: "Konosuke Uda",
+                cast: ["Mayumi Tanaka", "Kazuhiko Inoue"],
+                emoji: "🏴‍☠️",
+                relatedManga: "One Piece Manga",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 3,
+                name: "Death Note",
+                type: "anime",
+                year: 2006,
+                episodes: 37,
+                status: "Completo",
+                rating: 8.6,
+                genres: ["Psicológico", "Suspense", "Sobrenatural"],
+                synopsis: "Um caderno misterioso que mata quem quer que tenha seu nome escrito nele cai nas mãos de um adolescente genial que decide eliminar criminosos.",
+                studio: "Madhouse",
+                director: "Tetsuro Araki",
+                cast: ["Mamoru Miyano", "Kappei Yamaguchi"],
+                emoji: "📔",
+                relatedManga: "Death Note Manga",
+                popularity: "Muito Alto"
+            },
+            {
+                id: 4,
+                name: "Tokyo Ghoul",
+                type: "anime",
+                year: 2014,
+                episodes: 48,
+                status: "Completo",
+                rating: 7.9,
+                genres: ["Ação", "Fantasia Sombria", "Horror"],
+                synopsis: "Um adolescente comum é transformado em um semi-ghoul após um acidente e deve aprender a viver entre humanos e ghouls, criaturas que se alimentam de carne humana.",
+                studio: "Studio Pierrot",
+                director: "Shuhei Mobutu",
+                cast: ["Natsuhiko Kyogoku"],
+                emoji: "👻",
+                relatedManga: "Tokyo Ghoul Manga",
+                popularity: "Alto"
+            },
+            {
+                id: 5,
+                name: "Atacando os Titãs",
+                type: "anime",
+                year: 2013,
+                episodes: 94,
+                status: "Completo",
+                rating: 8.5,
+                genres: ["Ação", "Mistério", "Fantasia"],
+                synopsis: "Humanos vivem em muros para se proteger de titãs gigantes comedores de gente. Quando um titã colossal derruba as defesas, Eren e seus amigos se alista no exército para lutar.",
+                studio: "Wit Studio / MAPPA",
+                director: "Hajime Isayama",
+                cast: ["Yuki Kaji", "Yui Ishikawa"],
+                emoji: "🧟",
+                relatedManga: "Shingeki no Kyojin Manga",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 6,
+                name: "Demon Slayer",
+                type: "anime",
+                year: 2019,
+                episodes: 55,
+                status: "Em Andamento",
+                rating: 8.7,
+                genres: ["Ação", "Aventura", "Sobrenatural"],
+                synopsis: "Tanjiro Kamado jurou proteger sua irmã transformada em demônio, tornando-se um matador de demônios para encontrar a forma de restaurá-la.",
+                studio: "Ufotable",
+                director: "Haruo Sotozaki",
+                cast: ["Natsuki Hanae", "Akari Kitou"],
+                emoji: "⚔️",
+                relatedManga: "Kimetsu no Yaiba Manga",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 7,
+                name: "My Hero Academia",
+                type: "anime",
+                year: 2016,
+                episodes: 113,
+                status: "Completo",
+                rating: 8.2,
+                genres: ["Ação", "Superpoderes", "Escolar"],
+                synopsis: "Em um mundo onde a maioria das pessoas tem superpoderes, um adolescente comum é descoberto por um herói lendário e recebe uma chance de se tornar uma lenda.",
+                studio: "Bones",
+                director: "Kenji Nagasaki",
+                cast: ["Daiki Yamashita", "Nobuhiko Okamoto"],
+                emoji: "💪",
+                relatedManga: "Boku no Hero Academia Manga",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 8,
+                name: "Jujutsu Kaisen",
+                type: "anime",
+                year: 2020,
+                episodes: 47,
+                status: "Em Andamento",
+                rating: 8.7,
+                genres: ["Ação", "Sobrenatural", "Escolar"],
+                synopsis: "Um adolescente engole um dedo misterioso de um demônio e é possuído por uma força sombria poderosa. Ele se junta a uma escola de feiticeiros.",
+                studio: "MAPPA",
+                director: "Park Sung Ho",
+                cast: ["Yuuichi Nakamura", "Junya Enoki"],
+                emoji: "👹",
+                relatedManga: "Jujutsu Kaisen Manga",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 9,
+                name: "Steins;Gate",
+                type: "anime",
+                year: 2011,
+                episodes: 24,
+                status: "Completo",
+                rating: 9.0,
+                genres: ["Ficção Científica", "Psicológico", "Thriller"],
+                synopsis: "Um estudante inventa acidentalmente uma máquina do tempo e descobre uma conspiração que ameaça o mundo.",
+                studio: "White Fox",
+                director: "Hiroshi Hamasaki",
+                cast: ["Mamoru Miyano", "Asami Inoue"],
+                emoji: "⏰",
+                relatedManga: "Steins;Gate Manga",
+                popularity: "Alto"
+            },
+            {
+                id: 10,
+                name: "Bleach",
+                type: "anime",
+                year: 2004,
+                episodes: 366,
+                status: "Completo",
+                rating: 7.8,
+                genres: ["Ação", "Sobrenatural", "Aventura"],
+                synopsis: "Um adolescente comum obtém poderes de um shinigami e assume a responsabilidade de proteger humanos de espíritos malignos.",
+                studio: "Pierrot",
+                director: "Noriyuki Abe",
+                cast: ["Masakazu Morita", "Fumiko Orikasa"],
+                emoji: "⚪",
+                relatedManga: "Bleach Manga",
+                popularity: "Alto"
+            },
+            {
+                id: 11,
+                name: "Naruto Manga",
+                type: "manga",
+                year: 1999,
+                chapters: 700,
+                volumes: 72,
+                status: "Completo",
+                rating: 8.4,
+                genres: ["Ação", "Aventura", "Supernatural"],
+                synopsis: "A série de mangá original que começou tudo. Naruto Uzumaki em sua jornada para se tornar um ninja lendário.",
+                author: "Masashi Kishimoto",
+                publisher: "Jump Comics",
+                emoji: "📚",
+                relatedAnime: "Naruto",
+                popularity: "Muito Alto"
+            },
+            {
+                id: 12,
+                name: "One Piece Manga",
+                type: "manga",
+                year: 1997,
+                chapters: 1100,
+                volumes: 108,
+                status: "Em Andamento",
+                rating: 8.9,
+                genres: ["Ação", "Aventura", "Comédia"],
+                synopsis: "A série de mangá mais longa e uma das mais populares de todos os tempos. A aventura épica de Monkey D. Luffy.",
+                author: "Eiichiro Oda",
+                publisher: "Weekly Shonen Jump",
+                emoji: "📖",
+                relatedAnime: "One Piece",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 13,
+                name: "My Hero Academia Manga",
+                type: "manga",
+                year: 2014,
+                chapters: 426,
+                volumes: 33,
+                status: "Completo",
+                rating: 8.3,
+                genres: ["Ação", "Superpoderes", "Escolar"],
+                synopsis: "A série de mangá que inspirou o anime de sucesso. Um adolescente sem poderes em um mundo cheio deles.",
+                author: "Kohei Horikoshi",
+                publisher: "Weekly Shonen Jump",
+                emoji: "📕",
+                relatedAnime: "My Hero Academia",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 14,
+                name: "Attack on Titan Manga",
+                type: "manga",
+                year: 2009,
+                chapters: 139,
+                volumes: 34,
+                status: "Completo",
+                rating: 8.6,
+                genres: ["Ação", "Mistério", "Fantasia"],
+                synopsis: "A série de mangá que redefiniu o gênero de ficção científica e fantasia. Uma história épica de sobrevivência e liberdade.",
+                author: "Hajime Isayama",
+                publisher: "Bessatsu Shonen Magazine",
+                emoji: "📘",
+                relatedAnime: "Atacando os Titãs",
+                popularity: "Extremamente Alto"
+            },
+            {
+                id: 15,
+                name: "Demon Slayer Manga",
+                type: "manga",
+                year: 2016,
+                chapters: 205,
+                volumes: 23,
+                status: "Completo",
+                rating: 8.8,
+                genres: ["Ação", "Aventura", "Sobrenatural"],
+                synopsis: "A série de mangá que conquistou o mundo. A história de Tanjiro e sua luta contra os demônios.",
+                author: "Koyoharu Gotouge",
+                publisher: "Weekly Shonen Jump",
+                emoji: "📗",
+                relatedAnime: "Demon Slayer",
+                popularity: "Extremamente Alto"
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        // Função para buscar no banco de dados
+        function searchDatabase(query) {
+            const lowerQuery = query.toLowerCase().trim();
+            
+            if (!lowerQuery) return [];
+            
+            return animeDatabase.filter(item => 
+                item.name.toLowerCase().includes(lowerQuery) ||
+                item.author?.toLowerCase().includes(lowerQuery) ||
+                item.director?.toLowerCase().includes(lowerQuery) ||
+                item.genres.some(g => g.toLowerCase().includes(lowerQuery)) ||
+                item.synopsis.toLowerCase().includes(lowerQuery)
+            );
+        }
+
+        // Função para obter item por ID
+        function getItemById(id) {
+            return animeDatabase.find(item => item.id === id);
+        }
+
+        // Função para filtrar por tipo
+        function filterByTypeDatabase(type) {
+            if (type === 'all') return animeDatabase;
+            return animeDatabase.filter(item => item.type === type);
+        }
+
+        // Função de busca
+        function searchAnime() {
+            const query = document.getElementById('searchInput').value;
+            
+            if (!query.trim()) {
+                document.getElementById('resultsContainer').innerHTML = 
+                    '<p class="welcome-text">Digite o nome de um anime ou mangá para começar a pesquisa!</p>';
+                return;
+            }
+
+            let results = searchDatabase(query);
+            
+            if (currentFilter !== 'all') {
+                results = results.filter(item => item.type === currentFilter);
+            }
+
+            displayResults(results);
+        }
+
+        // Função para exibir resultados
+        function displayResults(results) {
+            const container = document.getElementById('resultsContainer');
+            
+            if (results.length === 0) {
+                container.innerHTML = '<p class="welcome-text">Nenhum resultado encontrado. Tente outra busca!</p>';
+                return;
+            }
+
+            let html = '<div class="results-grid">';
+            
+            results.forEach(item => {
+                html += `
+                    <div class="result-card" onclick="showDetails(${item.id})">
+                        <div class="card-image">${item.emoji}</div>
+                        <div class="card-content">
+                            <div class="card-title">${item.name}</div>
+                            <div class="card-type">${item.type.toUpperCase()}</div>
+                            <div class="card-info">
+                                <p><strong>Avaliação:</strong> ⭐ ${item.rating}</p>
+                                <p><strong>Status:</strong> ${item.status}</p>
+                                <p><strong>Ano:</strong> ${item.year}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById('detailsContainer').innerHTML = '';
+        }
+
+        // Função para mostrar detalhes
+        function showDetails(id) {
+            const item = getItemById(id);
+            if (!item) return;
+
+            let detailsHtml = `
+                <div class="details-header">
+                    <div class="details-image">${item.emoji}</div>
+                    <div class="details-info">
+                        <h2>${item.name}</h2>
+                        <div class="rating-section">
+                            <div class="rating-stars">
+                                ${'⭐'.repeat(Math.round(item.rating))}
+                            </div>
+                            <div class="rating-score">${item.rating}</div>
+                        </div>
+                        
+                        <div class="details-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Tipo</div>
+                                <div class="meta-value">${item.type.charAt(0).toUpperCase() + item.type.slice(1)}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Ano</div>
+                                <div class="meta-value">${item.year}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Status</div>
+                                <div class="meta-value">${item.status}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Popularidade</div>
+                                <div class="meta-value">${item.popularity}</div>
+                            </div>
+                            ${item.episodes ? `
+                            <div class="meta-item">
+                                <div class="meta-label">Episódios</div>
+                                <div class="meta-value">${item.episodes}</div>
+                            </div>
+                            ` : ''}
+                            ${item.chapters ? `
+                            <div class="meta-item">
+                                <div class="meta-label">Capítulos</div>
+                                <div class="meta-value">${item.chapters}</div>
+                            </div>
+                            ` : ''}
+                            ${item.volumes ? `
+                            <div class="meta-item">
+                                <div class="meta-label">Volumes</div>
+                                <div class="meta-value">${item.volumes}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-description">
+                    <h3>📖 Sinopse</h3>
+                    <p>${item.synopsis}</p>
+                </div>
+
+                <div class="genres-tags">
+                    ${item.genres.map(genre => `<span class="genre-tag">${genre}</span>`).join('')}
+                </div>
+
+                <div class="details-meta">
+                    ${item.studio ? `
+                    <div class="meta-item">
+                        <div class="meta-label">Estúdio</div>
+                        <div class="meta-value">${item.studio}</div>
+                    </div>
+                    ` : ''}
+                    ${item.director ? `
+                    <div class="meta-item">
+                        <div class="meta-label">Diretor</div>
+                        <div class="meta-value">${item.director}</div>
+                    </div>
+                    ` : ''}
+                    ${item.author ? `
+                    <div class="meta-item">
+                        <div class="meta-label">Autor</div>
+                        <div class="meta-value">${item.author}</div>
+                    </div>
+                    ` : ''}
+                    ${item.publisher ? `
+                    <div class="meta-item">
+                        <div class="meta-label">Editora</div>
+                        <div class="meta-value">${item.publisher}</div>
+                    </div>
+                    ` : ''}
+                    ${item.relatedAnime ? `
+                    <div class="meta-item">
+                        <div class="meta-label">Anime Relacionado</div>
+                        <div class="meta-value">${item.relatedAnime}</div>
+                    </div>
+                    ` : ''}
+                    ${item.relatedManga ? `
+                    <div class="meta-item">
+                        <div class="meta-label">Mangá Relacionado</div>
+                        <div class="meta-value">${item.relatedManga}</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <button class="close-btn" onclick="closeDetails()">Fechar Detalhes</button>
+            `;
+
+            document.getElementById('detailsContainer').innerHTML = detailsHtml;
+            document.getElementById('detailsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Função para fechar detalhes
+        function closeDetails() {
+            document.getElementById('detailsContainer').innerHTML = '';
+        }
+
+        // Função para filtrar por tipo
+        function filterByType(type) {
+            currentFilter = type;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const searchQuery = document.getElementById('searchInput').value;
+            if (searchQuery.trim()) {
+                searchAnime();
+            } else {
+                const filtered = filterByTypeDatabase(type);
+                displayResults(filtered);
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    searchAnime();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
