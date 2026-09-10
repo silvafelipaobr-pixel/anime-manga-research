@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Animes e Mangás</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎌 Pesquisador de Animes e Mangás</h1>
+            <p>Encontre informações detalhadas sobre seus animes e mangás favoritos</p>
+        </header>
+
+        <main>
+            <div class="search-section">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Pesquise um anime ou mangá... (ex: Naruto, One Piece, Tokyo Ghoul)"
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" onclick="searchAnime()">Pesquisar</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <button class="filter-btn" onclick="filterByType('anime')">Animes</button>
+                <button class="filter-btn" onclick="filterByType('manga')">Mangás</button>
+                <button class="filter-btn" onclick="filterByType('all')">Todos</button>
+            </div>
+
+            <div id="resultsContainer" class="results-container">
+                <p class="welcome-text">Digite o nome de um anime ou mangá para começar a pesquisa!</p>
+            </div>
+
+            <div id="detailsContainer" class="details-container"></div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 - Pesquisador de Animes e Mangás | Desenvolvido com ❤️</p>
+        </footer>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
